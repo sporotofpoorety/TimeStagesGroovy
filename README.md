@@ -10,3 +10,13 @@ Allows stages to be unlocked/locked with a timer.
   
 ## Downloads ##
 Downloads are https://minecraft.curseforge.com/projects/time-stages
+
+## Example
+
+```
+// Makes you gain a stage 30 seconds after getting the needed stage.
+mods.TimeStages.addTimer("neededStage" ,"UnlockedStage" ,30 ,"seconds");
+
+// Removes a stage after 20 minutes.
+mods.TimeStages.removalTimer("removedStage" ,20 ,"minutes");
+```
