@@ -10,7 +10,8 @@ import net.darkhax.bookshelf.util.PlayerUtils;
 import net.darkhax.gamestages.capabilities.PlayerDataHandler;
 import net.darkhax.gamestages.capabilities.PlayerDataHandler.IStageData;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.util.text.TextComponentString;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventHandler;
@@ -20,7 +21,7 @@ import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 
-@Mod(modid = Reference.MOD_ID, name = Reference.MOD_NAME, version = Reference.VERSION, dependencies = "required-after:crafttweaker;;required-after:gamestages@[1.0.71,);")
+@Mod(modid = Reference.MOD_ID, name = Reference.MOD_NAME, version = Reference.VERSION, dependencies = Reference.DEPENDENCIES)
 public class TimeStages {
 	
 	@Instance(Reference.MOD_ID)
@@ -35,10 +36,10 @@ public class TimeStages {
 	
 	private static StageInfo timer_info;
 	
-	public static void addTimerInfo(String stage, String nextStage, int time, String amount, boolean removal)
+	public static void addTimerInfo(String stage, String nextStage, int time, String amount, boolean removal, boolean removeOld)
 	{
 		// Check if the info doesn't already exist
-		timer_info = new StageInfo(stage, nextStage, time, amount, removal);
+		timer_info = new StageInfo(stage, nextStage, time, amount, removal, removeOld);
 		if(timers.contains(timer_info))
 			return;
 		else
@@ -52,13 +53,14 @@ public class TimeStages {
     }
     
     @SubscribeEvent
-    public void livingUpdate(TickEvent.PlayerTickEvent event)
+    public void playerTick(TickEvent.PlayerTickEvent event)
     {   
     	if (event.phase.equals(TickEvent.Phase.START) && event.side.isServer())
 		{
     		if (PlayerUtils.isPlayerReal(event.player)) {
                 final EntityPlayer player = (EntityPlayer) event.player;
-                
+            	NBTTagCompound playerData = player.getEntityData();
+            	
                 if (player.isCreative())
                     return;
                 
@@ -73,51 +75,96 @@ public class TimeStages {
                 	final String nextStage = info.getNextStage();
                 	final int time = TimeHelper.getProperTime(info.getTime(), info.getAmount());
                 	final String amount = info.getAmount();
+                	final boolean removeOld = info.isRemoveOld();
                 	
                 	if (removal)
                 	{
+            			String TimedName = "remove" + capitalizeFirstLetter(stage);
+
                 		if(stageData.hasUnlockedStage(stage))
                 		{
-                			int theTimer = info.timer++;
-                    		System.out.println("Timer going strong" + theTimer);
-                			if(theTimer == time)
+                			
+                			if(playerData.getInteger(TimedName) != info.timer)
+                			{
+                				info.timer = playerData.getInteger(TimedName);
+                			}
+                			
+                			if(info.timer == time)
         			        {
-                        		theTimer = 0;
-                        		info.timer = 0;
-                        		
+                				info.timer = 0;
+                				playerData.setInteger(TimedName, 0);
+                				
                     			stageData.lockStage(stage);
-                    			player.sendMessage(new TextComponentString("Stage " + stage + " has been locked."));;
+                    			player.sendMessage(new TextComponentTranslation("stage.removal.message", new Object[] {stage}));
         			        }
+                			else
+                			{
+                				++info.timer;
+                				playerData.setInteger(TimedName, info.timer);
+                			}
                 		}
                 		else
                 		{
-                   			if (info.timer > 0)
-                   			info.timer = 0;
+                   			if (info.timer != 0)
+                   			{
+                   				info.timer = 0;
+                				playerData.setInteger(TimedName, 0);
+                   			}
                 		}
                 	}
                 	else
                 	{
+            			String TimedName = "add" + capitalizeFirstLetter(stage) + capitalizeFirstLetter(nextStage);
+
                 		if (stageData.hasUnlockedStage(stage) && !stageData.hasUnlockedStage(nextStage))
                     	{
-                			int theTimer = info.timer++;
-                    		System.out.println("Timer going strong" + theTimer);
-                    		if(theTimer == time)
+
+                			if(playerData.getInteger(TimedName) != info.timer)
+                			{
+                				info.timer = playerData.getInteger(TimedName);
+                			}
+                			
+                    		if(info.timer == time)
         			        {
-                        		theTimer = 0;
-                        		info.timer = 0;
+                    			info.timer = 0;
+                				playerData.setInteger(TimedName, 0);
                         		
-                    			stageData.unlockStage(nextStage);
-                    			player.sendMessage(new TextComponentString("You unlocked stage " + nextStage + "!"));;
+                				if(removeOld)
+                				{
+                					stageData.unlockStage(nextStage);
+                					stageData.lockStage(stage);
+                				}
+                				else
+                				{
+                					stageData.unlockStage(nextStage);
+                				}
+                    			player.sendMessage(new TextComponentTranslation("stage.add.message", new Object[] {stage}));
+
         			        }
+                    		else
+                    		{
+                    			++info.timer;
+                				playerData.setInteger(TimedName, info.timer);
+                    		}
                     	}
                 		else
                 		{
-                			if (info.timer > 0)
-                			info.timer = 0;
+                			if (info.timer != 0)
+                   			{
+                   				info.timer = 0;
+                				playerData.setInteger(TimedName, 0);
+                   			}
                 		}
                 	}
                 }
         	}
     	}
+    }
+    
+    public String capitalizeFirstLetter(String original) {
+        if (original == null || original.length() == 0) {
+            return original;
+        }
+        return original.substring(0, 1).toUpperCase() + original.substring(1);
     }
 }

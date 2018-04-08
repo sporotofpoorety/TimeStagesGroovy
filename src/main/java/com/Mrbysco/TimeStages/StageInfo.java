@@ -8,14 +8,16 @@ public class StageInfo {
 	private String amount;
 	private boolean removal;
 	public int timer;
+	private boolean removeOld;
 	
-	public StageInfo(String stage, String nextStage, int time, String amount, boolean removal) {
+	public StageInfo(String stage, String nextStage, int time, String amount, boolean removal, boolean removeOld) {
 		this.stage = stage;
 		this.nextStage = nextStage;
 		this.time = time;
 		this.amount = amount;
 		this.removal = removal;
 		this.timer = 0;
+		this.removeOld = removeOld;
 	}
 	
 	public String getStage() {
@@ -36,5 +38,9 @@ public class StageInfo {
 	
 	public boolean isRemoval() {
 		return this.removal;
+	}
+	
+	public boolean isRemoveOld() {
+		return removeOld;
 	}
 }

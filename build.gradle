@@ -19,7 +19,7 @@ repositories {
 	}
 }
 
-version = "1.0"
+version = "1.1"
 group = "com.Mrbysco.TimeStages" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
 archivesBaseName = "Time Stages"
 
@@ -29,17 +29,17 @@ compileJava {
 }
 
 minecraft {
-    version = "1.12.2-14.23.1.2555"
+    version = "1.12.2-14.23.2.2611"
     runDir = "run"
     mappings = "snapshot_20171003"
 }
 
 dependencies {
-	deobfCompile "net.darkhax.bookshelf:Bookshelf-1.12.2:2.3.518"
-    deobfCompile "CraftTweaker2:CraftTweaker2-MC1120-Main:1.12-4.0.9.289"
-    deobfCompile "CraftTweaker2:CraftTweaker2-API:1.12-4.0.9.289"
-	deobfCompile "CraftTweaker2:ZenScript:1.12-4.0.9.289"
-    deobfCompile "net.darkhax.gamestages:GameStages-1.12.2:1.0.75"
+	deobfCompile "net.darkhax.bookshelf:Bookshelf-1.12.2:2.3.539"
+    deobfCompile "CraftTweaker2:CraftTweaker2-MC1120-Main:1.12-4.1.4.429"
+    deobfCompile "CraftTweaker2:CraftTweaker2-API:1.12-4.1.4.429"
+	deobfCompile "CraftTweaker2:ZenScript:1.12-4.1.4.429"
+    deobfCompile "net.darkhax.gamestages:GameStages-1.12.2:1.0.84"
 }
 
 processResources {
