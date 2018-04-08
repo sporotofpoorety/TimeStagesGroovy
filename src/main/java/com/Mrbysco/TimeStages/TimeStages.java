@@ -30,7 +30,7 @@ public class TimeStages {
 	@SidedProxy(clientSide = Reference.CLIENT_PROXY_CLASS, serverSide = Reference.SERVER_PROXY_CLASS)
 	public static CommonProxy proxy;
 	
-	public static final LoggingHelper LOG = new LoggingHelper("Time Stages");
+	public static final LoggingHelper LOG = new LoggingHelper(Reference.MOD_NAME);
 		
 	public static ArrayList<StageInfo> timers = new ArrayList<>();
 	
@@ -60,9 +60,6 @@ public class TimeStages {
     		if (PlayerUtils.isPlayerReal(event.player)) {
                 final EntityPlayer player = (EntityPlayer) event.player;
             	NBTTagCompound playerData = player.getEntityData();
-            	
-                if (player.isCreative())
-                    return;
                 
                 for (StageInfo info : this.timers) {
                 	if (info.getStage().isEmpty())
