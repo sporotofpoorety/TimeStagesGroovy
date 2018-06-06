@@ -4,24 +4,23 @@ public class TimeHelper {
 	
 	public static int getProperTime(int time, String amount) {
 		int actualTime = 0;
-		int timeTick = time * 20;
 		if (amount.isEmpty())
 		{
 			return 0;
 		}
 		else if (amount.contains("seconds"))
 		{
-			actualTime = timeTick;
+			actualTime = time;
 			return actualTime;
 		}
 		else if(amount.contains("min"))
 		{
-			actualTime = timeTick * 60;
+			actualTime = time * 60;
 			return actualTime;
 		}
 		else if (amount.contains("hour"))
 		{
-			actualTime = timeTick * 3600;
+			actualTime = time * 3600;
 			return actualTime;
 		}
 		

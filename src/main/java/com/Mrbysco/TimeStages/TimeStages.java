@@ -3,12 +3,13 @@ package com.Mrbysco.TimeStages;
 import java.util.ArrayList;
 
 import com.Mrbysco.TimeStages.proxy.CommonProxy;
+import com.Mrbysco.TimeStages.util.CurrentMilliTime;
 import com.Mrbysco.TimeStages.util.TimeHelper;
 
 import net.darkhax.bookshelf.lib.LoggingHelper;
 import net.darkhax.bookshelf.util.PlayerUtils;
-import net.darkhax.gamestages.capabilities.PlayerDataHandler;
-import net.darkhax.gamestages.capabilities.PlayerDataHandler.IStageData;
+import net.darkhax.gamestages.GameStageHelper;
+import net.darkhax.gamestages.data.IStageData;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.text.TextComponentTranslation;
@@ -52,6 +53,12 @@ public class TimeStages {
     	MinecraftForge.EVENT_BUS.register(this);
     }
     
+	public CurrentMilliTime milliTime;
+
+    public TimeStages() {
+		milliTime = new CurrentMilliTime();
+	}
+    
     @SubscribeEvent
     public void playerTick(TickEvent.PlayerTickEvent event)
     {   
@@ -60,99 +67,103 @@ public class TimeStages {
     		if (PlayerUtils.isPlayerReal(event.player)) {
                 final EntityPlayer player = (EntityPlayer) event.player;
             	NBTTagCompound playerData = player.getEntityData();
-                
-                for (StageInfo info : this.timers) {
-                	if (info.getStage().isEmpty())
-                		return;
+            	if (System.currentTimeMillis() > milliTime.getMilliTime() + 1000L)
+				{
+					milliTime.setMilliTimeToCurrent();
+
+					for (StageInfo info : this.timers) {
+						if (info.getStage().isEmpty())
+							return;
                 	
-                	final boolean removal = info.isRemoval();
-                	final IStageData stageData = PlayerDataHandler.getStageData(player);
+						final boolean removal = info.isRemoval();
+	                	final IStageData stageData = GameStageHelper.getPlayerData(player);
 
-                	final String stage = info.getStage();
-                	final String nextStage = info.getNextStage();
-                	final int time = TimeHelper.getProperTime(info.getTime(), info.getAmount());
-                	final String amount = info.getAmount();
-                	final boolean removeOld = info.isRemoveOld();
-                	
-                	if (removal)
-                	{
-            			String TimedName = "remove" + capitalizeFirstLetter(stage);
+	                	final String stage = info.getStage();
+	                	final String nextStage = info.getNextStage();
+	                	final int time = TimeHelper.getProperTime(info.getTime(), info.getAmount());
+	                	final String amount = info.getAmount();
+	                	final boolean removeOld = info.isRemoveOld();
+	                	
+	                	if (removal)
+	                	{
+	            			String TimedName = "remove" + capitalizeFirstLetter(stage);
 
-                		if(stageData.hasUnlockedStage(stage))
-                		{
-                			
-                			if(playerData.getInteger(TimedName) != info.timer)
-                			{
-                				info.timer = playerData.getInteger(TimedName);
-                			}
-                			
-                			if(info.timer == time)
-        			        {
-                				info.timer = 0;
-                				playerData.setInteger(TimedName, 0);
-                				
-                    			stageData.lockStage(stage);
-                    			player.sendMessage(new TextComponentTranslation("stage.removal.message", new Object[] {stage}));
-        			        }
-                			else
-                			{
-                				++info.timer;
-                				playerData.setInteger(TimedName, info.timer);
-                			}
-                		}
-                		else
-                		{
-                   			if (info.timer != 0)
-                   			{
-                   				info.timer = 0;
-                				playerData.setInteger(TimedName, 0);
-                   			}
-                		}
-                	}
-                	else
-                	{
-            			String TimedName = "add" + capitalizeFirstLetter(stage) + capitalizeFirstLetter(nextStage);
+	                		if(stageData.hasStage(stage))
+	                		{
+	                			
+	                			if(playerData.getInteger(TimedName) != info.timer)
+	                			{
+	                				info.timer = playerData.getInteger(TimedName);
+	                			}
+	                			
+	                			if(info.timer >= time)
+	        			        {
+	                				info.timer = 0;
+	                				playerData.setInteger(TimedName, 0);
+	                				
+	                    			stageData.removeStage(stage);
+	                    			player.sendMessage(new TextComponentTranslation("stage.removal.message", new Object[] {stage}));
+	        			        }
+	                			else
+	                			{
+	                				++info.timer;
+	                				playerData.setInteger(TimedName, info.timer);
+	                			}
+	                		}
+	                		else
+	                		{
+	                   			if (info.timer != 0)
+	                   			{
+	                   				info.timer = 0;
+	                				playerData.setInteger(TimedName, 0);
+	                   			}
+	                		}
+	                	}
+	                	else
+	                	{
+	            			String TimedName = "add" + capitalizeFirstLetter(stage) + capitalizeFirstLetter(nextStage);
 
-                		if (stageData.hasUnlockedStage(stage) && !stageData.hasUnlockedStage(nextStage))
-                    	{
+	                		if (stageData.hasStage(stage) && !stageData.hasStage(nextStage))
+	                    	{
 
-                			if(playerData.getInteger(TimedName) != info.timer)
-                			{
-                				info.timer = playerData.getInteger(TimedName);
-                			}
-                			
-                    		if(info.timer == time)
-        			        {
-                    			info.timer = 0;
-                				playerData.setInteger(TimedName, 0);
-                        		
-                				if(removeOld)
-                				{
-                					stageData.unlockStage(nextStage);
-                					stageData.lockStage(stage);
-                				}
-                				else
-                				{
-                					stageData.unlockStage(nextStage);
-                				}
-                    			player.sendMessage(new TextComponentTranslation("stage.add.message", new Object[] {stage}));
+	                			if(playerData.getInteger(TimedName) != info.timer)
+	                			{
+	                				info.timer = playerData.getInteger(TimedName);
+	                			}
+	                			
+	                    		if(info.timer >= time)
+	        			        {
+	                    			info.timer = 0;
+	                				playerData.setInteger(TimedName, 0);
+	                        		
+	                				if(removeOld)
+	                				{
+	                					stageData.addStage(nextStage);
+	                					stageData.removeStage(stage);
+	                				}
+	                				else
+	                				{
+	                					stageData.addStage(nextStage);
+	                				}
+	                    			player.sendMessage(new TextComponentTranslation("stage.add.message", new Object[] {stage}));
 
-        			        }
-                    		else
-                    		{
-                    			++info.timer;
-                				playerData.setInteger(TimedName, info.timer);
-                    		}
-                    	}
-                		else
-                		{
-                			if (info.timer != 0)
-                   			{
-                   				info.timer = 0;
-                				playerData.setInteger(TimedName, 0);
-                   			}
-                		}
-                	}
+	        			        }
+	                    		else
+	                    		{
+	                    			++info.timer;
+	                				playerData.setInteger(TimedName, info.timer);
+	                    		}
+	                    	}
+	                		else
+	                		{
+	                			if (info.timer != 0)
+	                   			{
+	                   				info.timer = 0;
+	                				playerData.setInteger(TimedName, 0);
+	                   			}
+	                		}
+	                	}
+					}
                 }
         	}
     	}
