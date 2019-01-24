@@ -1,4 +1,4 @@
-package com.Mrbysco.TimeStages.compat.ct;
+package com.mrbysco.timestages.compat.ct;
 
 import crafttweaker.CraftTweakerAPI;
 import crafttweaker.annotations.ZenRegister;

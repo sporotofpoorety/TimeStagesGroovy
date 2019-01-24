@@ -1,4 +1,4 @@
-package com.Mrbysco.TimeStages;
+package com.mrbysco.timestages;
 
 public class StageInfo {
 

@@ -1,4 +1,4 @@
-package com.Mrbysco.TimeStages.util;
+package com.mrbysco.timestages.util;
 
 public class CurrentMilliTime {
 	private long milliTime;

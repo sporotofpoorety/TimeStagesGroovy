@@ -1,15 +1,14 @@
-package com.Mrbysco.TimeStages;
+package com.mrbysco.timestages;
 
 import java.util.ArrayList;
 
-import com.Mrbysco.TimeStages.proxy.CommonProxy;
-import com.Mrbysco.TimeStages.util.CurrentMilliTime;
-import com.Mrbysco.TimeStages.util.TimeHelper;
+import com.mrbysco.timestages.proxy.CommonProxy;
+import com.mrbysco.timestages.util.CurrentMilliTime;
+import com.mrbysco.timestages.util.TimeHelper;
 
 import net.darkhax.bookshelf.lib.LoggingHelper;
 import net.darkhax.bookshelf.util.PlayerUtils;
 import net.darkhax.gamestages.GameStageHelper;
-import net.darkhax.gamestages.data.IStageData;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.text.TextComponentTranslation;
@@ -66,7 +65,6 @@ public class TimeStages {
 		{
     		if (PlayerUtils.isPlayerReal(event.player)) {
                 final EntityPlayer player = (EntityPlayer) event.player;
-            	NBTTagCompound playerData = player.getEntityData();
             	if (System.currentTimeMillis() > milliTime.getMilliTime() + 1000L)
 				{
 					milliTime.setMilliTimeToCurrent();
@@ -76,7 +74,6 @@ public class TimeStages {
 							return;
                 	
 						final boolean removal = info.isRemoval();
-	                	final IStageData stageData = GameStageHelper.getPlayerData(player);
 
 	                	final String stage = info.getStage();
 	                	final String nextStage = info.getNextStage();
@@ -88,26 +85,26 @@ public class TimeStages {
 	                	{
 	            			String TimedName = "remove" + capitalizeFirstLetter(stage);
 
-	                		if(stageData.hasStage(stage))
+	                		if(GameStageHelper.hasStage(player, stage))
 	                		{
 	                			
-	                			if(playerData.getInteger(TimedName) != info.timer)
+	                			if(getEntityTimeData(player, TimedName) != info.timer)
 	                			{
-	                				info.timer = playerData.getInteger(TimedName);
+	                				info.timer = getEntityTimeData(player, TimedName);
 	                			}
 	                			
 	                			if(info.timer >= time)
 	        			        {
 	                				info.timer = 0;
-	                				playerData.setInteger(TimedName, 0);
+	                				setEntityTimeData(player, TimedName, 0);
 	                				
-	                    			stageData.removeStage(stage);
+	                				GameStageHelper.removeStage(player, stage);
 	                    			player.sendMessage(new TextComponentTranslation("stage.removal.message", new Object[] {stage}));
 	        			        }
 	                			else
 	                			{
 	                				++info.timer;
-	                				playerData.setInteger(TimedName, info.timer);
+	                				setEntityTimeData(player, TimedName, info.timer);
 	                			}
 	                		}
 	                		else
@@ -115,7 +112,7 @@ public class TimeStages {
 	                   			if (info.timer != 0)
 	                   			{
 	                   				info.timer = 0;
-	                				playerData.setInteger(TimedName, 0);
+	                				setEntityTimeData(player, TimedName, 0);
 	                   			}
 	                		}
 	                	}
@@ -123,27 +120,27 @@ public class TimeStages {
 	                	{
 	            			String TimedName = "add" + capitalizeFirstLetter(stage) + capitalizeFirstLetter(nextStage);
 
-	                		if (stageData.hasStage(stage) && !stageData.hasStage(nextStage))
+	                		if (GameStageHelper.hasStage(player, stage) && !GameStageHelper.hasStage(player, nextStage))
 	                    	{
 
-	                			if(playerData.getInteger(TimedName) != info.timer)
+	                			if(getEntityTimeData(player, TimedName) != info.timer)
 	                			{
-	                				info.timer = playerData.getInteger(TimedName);
+	                				info.timer = getEntityTimeData(player, TimedName);
 	                			}
 	                			
 	                    		if(info.timer >= time)
 	        			        {
 	                    			info.timer = 0;
-	                				playerData.setInteger(TimedName, 0);
+	                    			setEntityTimeData(player, TimedName, 0);
 	                        		
 	                				if(removeOld)
 	                				{
-	                					stageData.addStage(nextStage);
-	                					stageData.removeStage(stage);
+	                					GameStageHelper.addStage(player, nextStage);
+	                					GameStageHelper.removeStage(player, stage);
 	                				}
 	                				else
 	                				{
-	                					stageData.addStage(nextStage);
+	                					GameStageHelper.addStage(player, nextStage);
 	                				}
 	                    			player.sendMessage(new TextComponentTranslation("stage.add.message", new Object[] {stage}));
 
@@ -151,7 +148,7 @@ public class TimeStages {
 	                    		else
 	                    		{
 	                    			++info.timer;
-	                				playerData.setInteger(TimedName, info.timer);
+	                    			setEntityTimeData(player, TimedName, info.timer);
 	                    		}
 	                    	}
 	                		else
@@ -159,7 +156,7 @@ public class TimeStages {
 	                			if (info.timer != 0)
 	                   			{
 	                   				info.timer = 0;
-	                				playerData.setInteger(TimedName, 0);
+	                   				setEntityTimeData(player, TimedName, 0);
 	                   			}
 	                		}
 	                	}
@@ -167,6 +164,29 @@ public class TimeStages {
                 }
         	}
     	}
+    }
+    
+    public static void setEntityTimeData(EntityPlayer player, String valueTag, int time)
+    {
+    	NBTTagCompound playerData = player.getEntityData();
+    	NBTTagCompound data = getTag(playerData, EntityPlayer.PERSISTED_NBT_TAG);
+    	
+    	data.setInteger(valueTag, time);
+    	playerData.setTag(EntityPlayer.PERSISTED_NBT_TAG, data);
+    }
+    
+    public static int getEntityTimeData(EntityPlayer player, String valueTag)
+    {
+    	NBTTagCompound playerData = player.getEntityData();
+    	NBTTagCompound data = getTag(playerData, EntityPlayer.PERSISTED_NBT_TAG);
+    	return data.getInteger(valueTag);
+    }
+    
+    public static NBTTagCompound getTag(NBTTagCompound tag, String key) {
+		if(tag == null || !tag.hasKey(key)) {
+			return new NBTTagCompound();
+		}
+		return tag.getCompoundTag(key);
     }
     
     public String capitalizeFirstLetter(String original) {

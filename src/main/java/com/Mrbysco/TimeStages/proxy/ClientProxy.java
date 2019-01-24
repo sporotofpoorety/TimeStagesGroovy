@@ -1,4 +1,4 @@
-package com.Mrbysco.TimeStages.proxy;
+package com.mrbysco.timestages.proxy;
 
 public class ClientProxy extends ServerProxy{
 	

@@ -1,6 +1,6 @@
-package com.Mrbysco.TimeStages.compat.ct;
+package com.mrbysco.timestages.compat.ct;
 
-import com.Mrbysco.TimeStages.TimeStages;
+import com.mrbysco.timestages.TimeStages;
 
 import crafttweaker.IAction;
 
