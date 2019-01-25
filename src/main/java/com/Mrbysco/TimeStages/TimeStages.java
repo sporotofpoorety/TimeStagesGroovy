@@ -142,7 +142,7 @@ public class TimeStages {
 	                				{
 	                					GameStageHelper.addStage(player, nextStage);
 	                				}
-	                    			player.sendMessage(new TextComponentTranslation("stage.add.message", new Object[] {stage}));
+	                    			player.sendMessage(new TextComponentTranslation("stage.add.message", new Object[] {nextStage}));
 
 	        			        }
 	                    		else
