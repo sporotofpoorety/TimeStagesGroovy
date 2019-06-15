@@ -6,6 +6,7 @@ import crafttweaker.IAction;
 
 public class ActionAddTimer implements IAction {
 
+	private final String uniqueID;
 	private final String stage;
 	private final String nextStage;
 	private final int time;
@@ -13,7 +14,8 @@ public class ActionAddTimer implements IAction {
 	private final boolean removal;
 	private final boolean removeOld;
 
-	public ActionAddTimer(String stage, String nextStage, int time, String amount, boolean removal, boolean removeOld) {
+	public ActionAddTimer(String ID, String stage, String nextStage, int time, String amount, boolean removal, boolean removeOld) {
+		this.uniqueID = ID;
 		this.stage = stage;
 		this.nextStage = nextStage;
 		this.time = time;
@@ -25,9 +27,9 @@ public class ActionAddTimer implements IAction {
 	@Override
 	public void apply() {
 		if (this.removal)
-			TimeStages.addTimerInfo(stage, nextStage, time, amount, true, removeOld);
+			TimeStages.addTimerInfo(uniqueID, stage, nextStage, time, amount, true, removeOld);
 		else
-			TimeStages.addTimerInfo(stage, nextStage, time, amount, false, false);
+			TimeStages.addTimerInfo(uniqueID, stage, nextStage, time, amount, false, false);
 	}
 
 	@Override

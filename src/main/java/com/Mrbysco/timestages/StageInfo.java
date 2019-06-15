@@ -2,6 +2,7 @@ package com.mrbysco.timestages;
 
 public class StageInfo {
 
+	private String uniqueID;
 	private String stage;
 	private String nextStage;
 	private int time;
@@ -10,7 +11,8 @@ public class StageInfo {
 	public int timer;
 	private boolean removeOld;
 	
-	public StageInfo(String stage, String nextStage, int time, String amount, boolean removal, boolean removeOld) {
+	public StageInfo(String ID, String stage, String nextStage, int time, String amount, boolean removal, boolean removeOld) {
+		this.uniqueID = ID;
 		this.stage = stage;
 		this.nextStage = nextStage;
 		this.time = time;
@@ -42,5 +44,9 @@ public class StageInfo {
 	
 	public boolean isRemoveOld() {
 		return removeOld;
+	}
+
+	public String getUniqueID() {
+		return uniqueID;
 	}
 }
