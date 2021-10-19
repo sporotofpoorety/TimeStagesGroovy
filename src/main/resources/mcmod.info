@@ -5,10 +5,10 @@
 	  "description": "Allows stages to be unlocked/locked with timers.",
 	  "version": "${version}",
 	  "mcversion": "${mcversion}",
-	  "url": "",
+	  "url": "https://www.curseforge.com/minecraft/mc-mods/time-stages",
 	  "updateUrl": "",
 	  "authorList": ["Mrbysco"],
-	  "credits": "Svennieke for the idea!",
+	  "credits": "ShyNieke for the idea!",
 	  "logoFile": "",
 	  "screenshots": [],
 	  "dependencies": []

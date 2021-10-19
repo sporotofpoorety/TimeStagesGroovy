@@ -5,7 +5,6 @@ import com.mrbysco.timestages.TimeStages;
 import crafttweaker.IAction;
 
 public class ActionAddTimer implements IAction {
-
 	private final String uniqueID;
 	private final String stage;
 	private final String nextStage;
