@@ -1,7 +1,6 @@
 package com.mrbysco.timestages.compat.ct;
 
 import com.mrbysco.timestages.TimeStages;
-
 import crafttweaker.IAction;
 
 public class ActionAddTimer implements IAction {
@@ -9,7 +8,7 @@ public class ActionAddTimer implements IAction {
 	private final String stage;
 	private final String nextStage;
 	private final int time;
-	private final String amount;  
+	private final String amount;
 	private final boolean removal;
 	private final boolean removeOld;
 
@@ -22,7 +21,7 @@ public class ActionAddTimer implements IAction {
 		this.removal = removal;
 		this.removeOld = removeOld;
 	}
-	
+
 	@Override
 	public void apply() {
 		if (this.removal)
@@ -34,9 +33,9 @@ public class ActionAddTimer implements IAction {
 	@Override
 	public String describe() {
 		if (this.removal)
-			return String.format(this.stage + "will be locked in %d %s", this.time, this.amount);	
+			return String.format(this.stage + "will be locked in %d %s", this.time, this.amount);
 		else
-			return String.format("%d %s has been added to unlock stage " + this.nextStage, this.time, this.amount);	
+			return String.format("%d %s has been added to unlock stage " + this.nextStage, this.time, this.amount);
 	}
 
 }

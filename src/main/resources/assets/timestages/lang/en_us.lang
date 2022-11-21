@@ -1,3 +1,3 @@
 #Messages
-stage.removal.message=Stage %s has been locked.
-stage.add.message=You unlocked stage %s!
+timestages.requiredStage.removal.message=Stage %s has been locked.
+timestages.requiredStage.add.message=You unlocked stage %s!

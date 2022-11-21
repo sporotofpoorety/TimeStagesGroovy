@@ -1,16 +1,18 @@
 [
-	{
-	  "modid": "timestages",
-	  "name": "Time Stages",
-	  "description": "Allows stages to be unlocked/locked with timers.",
-	  "version": "${version}",
-	  "mcversion": "${mcversion}",
-	  "url": "https://www.curseforge.com/minecraft/mc-mods/time-stages",
-	  "updateUrl": "",
-	  "authorList": ["Mrbysco"],
-	  "credits": "ShyNieke for the idea!",
-	  "logoFile": "",
-	  "screenshots": [],
-	  "dependencies": []
-	}
+  {
+    "modid": "timestages",
+    "name": "Time Stages",
+    "description": "Allows stages to be unlocked/locked with timers.",
+    "version": "${version}",
+    "mcversion": "${mcversion}",
+    "url": "https://www.curseforge.com/minecraft/mc-mods/time-stages",
+    "updateUrl": "",
+    "authorList": [
+      "Mrbysco"
+    ],
+    "credits": "ShyNieke for the idea!",
+    "logoFile": "",
+    "screenshots": [],
+    "dependencies": []
+  }
 ]

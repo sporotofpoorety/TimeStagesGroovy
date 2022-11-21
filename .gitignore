@@ -11,14 +11,13 @@ out
 *.ipr
 *.iws
 *.iml
-*.psd
 .idea
 
 # gradle
 build
 .gradle
+logs
 
 # other
 eclipse
 run
-classes
