@@ -69,7 +69,6 @@ dependencies {
     minecraft "net.minecraftforge:forge:${mc_version}-${forge_version}"
 
     compile "net.darkhax.bookshelf:Bookshelf-${mc_version}:2.3.590"
-    compile "CraftTweaker2:CraftTweaker2-MC1120-Main:1.12-4.1.20.682"
     compile "net.darkhax.gamestages:GameStages-${mc_version}:2.0.123"
 }
 
