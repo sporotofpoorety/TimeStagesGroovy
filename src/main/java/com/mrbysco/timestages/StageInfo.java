@@ -10,8 +10,10 @@ public class StageInfo {
 	private final boolean removal;
 	public int timer;
 	private final boolean removeOld;
+	private final String timerAddMessage;
+	private final String timerRemovalMessage;
 
-	public StageInfo(String ID, String stage, String nextStage, int time, String amount, boolean removal, boolean removeOld) {
+	public StageInfo(String ID, String stage, String nextStage, int time, String amount, boolean removal, boolean removeOld, String timerAddMessage, String timerRemovalMessage) {
 		this.uniqueID = ID;
 		this.stage = stage;
 		this.nextStage = nextStage;
@@ -20,6 +22,8 @@ public class StageInfo {
 		this.removal = removal;
 		this.timer = 0;
 		this.removeOld = removeOld;
+		this.timerAddMessage = timerAddMessage;
+		this.timerRemovalMessage = timerRemovalMessage;
 	}
 
 	public String getStage() {
@@ -49,4 +53,12 @@ public class StageInfo {
 	public String getUniqueID() {
 		return uniqueID;
 	}
+
+    public String getTimerAddMessage() {
+        return timerAddMessage;
+    }
+
+    public String getTimerRemovalMessage() {
+        return timerRemovalMessage;
+    }
 }

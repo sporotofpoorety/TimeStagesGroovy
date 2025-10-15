@@ -1,7 +1,7 @@
 [
   {
     "modid": "timestages",
-    "name": "Time Stages",
+    "name": "Time Stages Groovy Edition",
     "description": "Allows stages to be unlocked/locked with timers.",
     "version": "${version}",
     "mcversion": "${mcversion}",

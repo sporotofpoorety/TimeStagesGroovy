@@ -6,7 +6,7 @@ import net.darkhax.bookshelf.util.PlayerUtils;
 import net.darkhax.gamestages.GameStageHelper;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.text.TextComponentTranslation;
+import net.minecraft.util.text.TextComponentString;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventHandler;
@@ -27,9 +27,9 @@ public class TimeStages {
 
 	public static HashMap<String, StageInfo> timers = new HashMap<String, StageInfo>();
 
-	public static void addTimerInfo(String uniqueID, String stage, String nextStage, int time, String amount, boolean removal, boolean removeOld) {
+	public static void addTimerInfo(String uniqueID, String stage, String nextStage, int time, String amount, boolean removal, boolean removeOld, String timerAddMessage, String timerRemovalMessage) {
 		// Check if the info doesn't already exist
-		StageInfo timer_info = new StageInfo(uniqueID, stage, nextStage, time, amount, removal, removeOld);
+		StageInfo timer_info = new StageInfo(uniqueID, stage, nextStage, time, amount, removal, removeOld, timerAddMessage, timerRemovalMessage);
 		if (!timers.containsValue(timer_info) || !timers.containsKey(uniqueID)) {
 			timers.put(uniqueID, timer_info);
 		}
@@ -61,6 +61,8 @@ public class TimeStages {
 						final int time = TimeHelper.getProperTime(info.getTime(), info.getAmount());
 						final boolean removeOld = info.isRemoveOld();
 						final String uniqueID = info.getUniqueID();
+                        final String timerAddMessage = info.getTimerAddMessage();
+                        final String timerRemovalMessage = info.getTimerRemovalMessage();
 
 						if (removal) {
 							if (requiredStage.isEmpty() || GameStageHelper.hasStage(player, requiredStage)) {
@@ -74,7 +76,9 @@ public class TimeStages {
 
 									if (!requiredStage.isEmpty()) {
 										GameStageHelper.removeStage(player, requiredStage);
-										player.sendMessage(new TextComponentTranslation("timestages.requiredStage.removal.message", new Object[]{requiredStage}));
+                                        if(!timerRemovalMessage.isEmpty()) {
+										    player.sendMessage(new TextComponentString(timerRemovalMessage));
+                                        }
 									}
 								} else {
 									++info.timer;
@@ -96,7 +100,9 @@ public class TimeStages {
 										if (removeOld && !requiredStage.isEmpty()) {
 											GameStageHelper.removeStage(player, requiredStage);
 										}
-										player.sendMessage(new TextComponentTranslation("timestages.requiredStage.add.message", new Object[]{nextStage}));
+                                        if(!timerAddMessage.isEmpty()) {
+										    player.sendMessage(new TextComponentString(timerAddMessage));
+                                        }
 									}
 								} else {
 									if (getEntityTimeData(player, uniqueID) != info.timer) {
@@ -111,7 +117,9 @@ public class TimeStages {
 										if (removeOld && !requiredStage.isEmpty()) {
 											GameStageHelper.removeStage(player, requiredStage);
 										}
-										player.sendMessage(new TextComponentTranslation("timestages.requiredStage.add.message", new Object[]{nextStage}));
+                                        if(!timerAddMessage.isEmpty()) {
+										    player.sendMessage(new TextComponentString(timerAddMessage));
+                                        }
 									} else {
 										++info.timer;
 										setEntityTimeData(player, uniqueID, info.timer);
